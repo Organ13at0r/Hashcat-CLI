@@ -1,12 +1,14 @@
 # @Copyright (c) 2022 Organ13at0r
 # https://t.me/Organ13at0r - Telegram
 
-# |------------------------------------------------------------------------------------------------------------------------|
-# |Псевдоинтерфейс командной строки для использования утилиты HashCat с дополнительными возможностями.                     |
-# |Ее основная задача заключается в упрощение работы с HashCat.                                                            |
-# |------------------------------------------------------------------------------------------------------------------------|
+# |-----------------------------------------------------------------------------------------------------------------|
+# |Псевдоинтерфейс командной строки для использования утилиты HashCat с дополнительными возможностями.              |
+# |Ее основная задача заключается в упрощение работы с HashCat.                                                     |
+# |-----------------------------------------------------------------------------------------------------------------|
 
-import sys, time, subprocess
+import sys
+import time
+import subprocess
 try:
     from rich import print as rprint
     from rich.progress import track
@@ -15,30 +17,34 @@ except ImportError:
     subprocess.call(["pip3", "install", "-r", "requirements.txt"])
     sys.exit()
 
-def getHashType() -> int:
+
+def get_hash_type() -> int:
     """
     Функция выводит список возможных типов хешей и возвращяет тип хеша выбранный пользователем.
     """
-    with open("typesOfHash.txt", "r") as file:
-        types = file.read()
+    try:
+        with open("typesOfHash.txt", "r") as file:
+            types = file.read()
+    except FileNotFoundError:
+        rprint("[bold red]ERROR: File was't founded![/bold red]")
 
-    rprint(f"[italic yellow]{types}[/italic yellow]") # Отображение типов хешей
+    rprint(f"[italic yellow]{types}[/italic yellow]")  # Отображение типов хешей
 
     while True:
         try:
-            hashId = int(input("Id [-1 for quit] >>> ")) # Запрашиваем ID хеша
-            if hashId == -1:
+            hash_id = int(input("Id [-1 for quit] >>> "))  # Запрашиваем ID хеша
+            if hash_id == -1:
                 subprocess.call("clear")
                 break
             else:
                 subprocess.call("clear")
-                return hashId
-
+                return hash_id
         except ValueError:
             rprint("[bold red]Error![/bold red] -> [italic]Id must be a digit[/italic].\n")
             continue
 
-def getAttackType() -> str:
+
+def get_attack_type() -> str:
     """
     Функция возвращяет тип аттаки выбранный пользователем.
     """
@@ -47,42 +53,41 @@ def getAttackType() -> str:
         rprint("\t[reverse blue][1][/reverse blue] -> Wordlist")
         rprint("\t[reverse blue][2][/reverse blue] -> BruteForce")
         rprint("\t[reverse red][-1][/reverse red] -> Main menu")
-
         try:
-            attackId = int(input("\nId [-1 for quit] >>> ")) # Запрашиваем ID аттаки
-            if attackId == 1:
+            attack_id = int(input("\nId [-1 for quit] >>> "))  # Запрашиваем ID аттаки
+            if attack_id == 1:
                 subprocess.call("clear")
                 return "Wordlist"
-            elif attackId == 2:
+            elif attack_id == 2:
                 subprocess.call("clear")
                 return "Bruteforce"
-            elif attackId == -1:
+            elif attack_id == -1:
                 subprocess.call("clear")
                 break
-
         except ValueError:
             rprint("[bold red]Error![/bold red] -> [italic]Id must be a digit[/italic].")
             continue
 
-def getWordlist() -> str:
+
+def get_wordlist() -> str:
     """
     Функция запрашивает и возвращяет cписок паролей введенный пользователем.
     """
     while True:
         try:
-            pathToWordlist = input("\nPath to the wordlist [Q to exit]: ") # Запрашиваем путь до списка
-            if pathToWordlist.lower() == "q":
+            path_to_wordlist = input("\nPath to the wordlist [Q to exit]: ")  # Запрашиваем путь до списка
+            if path_to_wordlist.lower() == "q":
                 subprocess.call("clear")
                 break
             else:
                 subprocess.call("clear")
-                return pathToWordlist
-
+                return path_to_wordlist
         except ValueError:
             rprint("[bold red]Error![/bold red] -> [italic]Path must be a string[/italic].\n")
             continue
 
-def getDevices() -> int:
+
+def get_devices() -> int:
     """
     Функция запрашивает и возвращяет тип устройства которое будет использоваться для взлома пароля.
     """
@@ -92,32 +97,31 @@ def getDevices() -> int:
         rprint("\t[reverse blue][2][/reverse blue] GPU")
         rprint("\t[reverse blue][3][/reverse blue] CPU and GPU")
         rprint("\t[reverse red][-1][/reverse red] -> Main menu")
-
         try:
-            devicesId = int(input("\nId >>> "))
-            if devicesId == 1:
+            devices_id = int(input("\nId >>> "))
+            if devices_id == 1:
                 subprocess.call("clear")
                 return 1
-            elif devicesId == 2:
+            elif devices_id == 2:
                 subprocess.call("clear")
                 return 2
-            elif devicesId == 3:
+            elif devices_id == 3:
                 subprocess.call("clear")
                 return 3
-            elif devicesId == -1:
+            elif devices_id == -1:
                 subprocess.call("clear")
                 break
-
         except ValueError:
             rprint("[bold red]Error![/bold red] -> [italic]Id must be a digit[/italic].\n")
             continue
 
-def getMask() -> str:
+
+def get_mask() -> str:
     """
     Функция запрашивает и возвращяет маску
     """
     while True:
-        rprint("""[bold yellow]
+        rprint(r"""[bold yellow]
   ?l | abcdefghijklmnopqrstuvwxyz
   ?u | ABCDEFGHIJKLMNOPQRSTUVWXYZ
   ?d | 0123456789
@@ -127,60 +131,70 @@ def getMask() -> str:
   ?a | ?l?u?d?s
   ?b | 0x00 - 0xff
         [/bold yellow]""")
-
         try:
-            maskType = input("Mask [Q for quit] >> ")
-            if maskType.lower() == "q":
+            mask_type = input("Mask [Q for quit] >> ")
+            if mask_type.lower() == "q":
                 subprocess.call("clear")
                 break
             else:
                 subprocess.call("clear")
-                return maskType
-
+                return mask_type
         except ValueError:
             rprint("[bold red]Error![/bold red] -> [italic]Mask must be a string[/italic].\n")
             continue
 
-def attackWithWordlist(hashType: int, devices: int, wordlist: str) -> None:
+
+def attack_with_wordlist(hash_type: int, devices: int, wordlist: str) -> None:
     """
     Функция запускает процесс взлома на основе словаря.
     """
     subprocess.call("clear")
     try:
-        sessionName = input("Enter a session name: ")
-        fileWithHash = input("Enter file with hash for decrypt: ")
+        session_name = input("Enter a session name: ")
+        file_with_hash = input("Enter file with hash for decrypt: ")
         if devices == 3:
-            subprocess.call(["xterm", "-e", "hashcat", "-m", str(hashType), "-a", "0", fileWithHash, wordlist, "--force", "-D", "1,2", "--status", "--session", sessionName])
+            subprocess.call(
+                ["xterm", "-e", "hashcat", "-m", str(hash_type), "-a", "0", file_with_hash, wordlist, "--force", "-D",
+                 "1,2", "--status", "--session", session_name])
         else:
-            subprocess.call(["xterm", "-e", "hashcat", "-m", str(hashType), "-a", "0", fileWithHash, wordlist, "--force", "-D", str(devices), "--status", "--session", sessionName])
+            subprocess.call(
+                ["xterm", "-e", "hashcat", "-m", str(hash_type), "-a", "0", file_with_hash, wordlist, "--force", "-D",
+                 str(devices), "--status", "--session", session_name])
     except ValueError:
         rprint("[bold red]Error![/bold red] -> [italic]Session name, and Hash file must be a string[/italic].\n")
 
-def attackWithMask(hashType: int, devices: int, mask: str) -> None:
+
+def attack_with_mask(hash_type: int, devices: int, mask: str) -> None:
     """
     Функция запускает процесс взлома на основе маски.
     """
     subprocess.call("clear")
     try:
-        sessionName = input("Enter a session name: ")
-        fileWithHash = input("Enter file with hash for decrypt: ")
+        session_name = input("Enter a session name: ")
+        file_with_hash = input("Enter file with hash for decrypt: ")
         if devices == 3:
-            subprocess.call(["xterm", "-e", "hashcat", "-m", str(hashType), "-a", "3", fileWithHash, mask, "--force", "-D", "1,2", "--status", "--session", sessionName])
+            subprocess.call(
+                ["xterm", "-e", "hashcat", "-m", str(hash_type), "-a", "3", file_with_hash, mask, "--force", "-D",
+                 "1,2", "--status", "--session", session_name])
         else:
-            subprocess.call(["xterm", "-e", "hashcat", "-m", str(hashType), "-a", "3", fileWithHash, mask, "--force", "-D", str(devices), "--status", "--session", sessionName])
+            subprocess.call(
+                ["xterm", "-e", "hashcat", "-m", str(hash_type), "-a", "3", file_with_hash, mask, "--force", "-D",
+                 str(devices), "--status", "--session", session_name])
     except ValueError:
         rprint("[bold red]Error![/bold red] -> [italic]Session name, and Hash file must be a string[/italic].\n")
 
-def restoreSession() -> None:
+
+def restore_session() -> None:
     """
     Функция востанавливает прерванную сессию.
     """
     subprocess.call("clear")
     try:
-        sessionName = input("Enter a session name: ")
-        subprocess.call(["xterm", "-e", "hashcat", "--session", sessionName, "--restore"])
+        session_name = input("Enter a session name: ")
+        subprocess.call(["xterm", "-e", "hashcat", "--session", session_name, "--restore"])
     except ValueError:
         rprint("[bold red]Error![/bold red] -> [italic]Session name must be a string[/italic].\n")
+
 
 def main():
     try:
@@ -188,15 +202,15 @@ def main():
         subprocess.call(["sudo", "hashcat", "--version"])
         print()
     except:
-        rprint("[bold red]Error![/bold red] -> [italic]You must intall the hashcat[/italic]\n")
+        rprint("[bold red]Error![/bold red] -> [italic]You must install the hashcat[/italic]\n")
         sys.exit()
 
-    for i in track(range(100)): # Прогресс бар
+    for _ in track(range(100)):  # Прогресс бар
         time.sleep(0.01)
 
     subprocess.call("clear")
 
-    rprint("""[blink green]
+    rprint(r"""[blink green]
     |||         |||       //---||           /----------|||         |||  |||||||||||       //---|| ||||||||||||
     |||         |||      //    ||          //----------|||         |||  |||              //    ||     \  /
     |||         |||     //     ||         //           |||         |||  |||             //     ||      ||
@@ -209,15 +223,15 @@ def main():
 
     rprint("[bold green]Made by Organ13at0r[/bold green]")
 
-    hashType: int = None
-    attackType: str = None
-    devices: int = None # CPY, GPU или оба
-    wordlist: str = None
-    mask: str = None
+    hash_type = int()
+    attack_type = str()
+    devices = int()  # CPY, GPU или оба
+    wordlist = str()
+    mask = str()
 
     while True:
-        rprint(f"\n[bold blue]Hash type:[/bold blue] {hashType}")
-        rprint(f"[bold blue]Attack type:[/bold blue] {attackType}")
+        rprint(f"\n[bold blue]Hash type:[/bold blue] {hash_type}")
+        rprint(f"[bold blue]Attack type:[/bold blue] {attack_type}")
         rprint(f"[bold blue]Devices:[/bold blue] {devices} -> (1) CPU, (2) GPU, (3) Both")
         rprint(f"[bold blue]Wordlist:[/bold blue] {wordlist}")
         rprint(f"[bold blue]Mask:[/bold blue] {mask}")
@@ -236,39 +250,43 @@ def main():
         except ValueError:
             rprint("[bold red]Error![/bold red] -> [italic]Response must be a digit[/italic].")
             continue
+
         if response == -1:
             rprint("\n[bold red]Cancelled...[/bold red]")
             time.sleep(1)
             subprocess.call("clear")
             sys.exit()
         elif response == 1:
-            hashType = getHashType()
+            hash_type = get_hash_type()
         elif response == 2:
-            attackType = getAttackType()
+            attack_type = get_attack_type()
         elif response == 3:
-            devices = getDevices()
+            devices = get_devices()
         elif response == 4:
-            wordlist = getWordlist()
+            wordlist = get_wordlist()
         elif response == 5:
-            if attackType == "Wordlist":
-                if not None in [hashType, devices, wordlist]:
-                    attackWithWordlist(hashType, devices, wordlist)
+            if attack_type == "Wordlist":
+                if None not in [hash_type, devices, wordlist]:
+                    attack_with_wordlist(hash_type, devices, wordlist)
                 else:
-                    rprint("[bold red]Error![/bold red] -> [italic]You must correct the parameters for attack.[/italic]\n")
-            elif attackType == "Bruteforce":
-                if not None in [hashType, devices, mask]:
-                    attackWithMask(hashType, devices, mask)
+                    rprint(
+                        "[bold red]Error![/bold red] -> [italic]You must correct the parameters for attack.[/italic]\n")
+            elif attack_type == "Bruteforce":
+                if None not in [hash_type, devices, mask]:
+                    attack_with_mask(hash_type, devices, mask)
                 else:
-                    rprint("[bold red]Error![/bold red] -> [italic]You must correct the parameters for attack.[/italic]\n")
+                    rprint(
+                        "[bold red]Error![/bold red] -> [italic]You must correct the parameters for attack.[/italic]\n")
         elif response == 6:
-            restoreSession()
+            restore_session()
         elif response == 7:
-            mask = getMask()
+            mask = get_mask()
+
 
 if __name__ == "__main__":
     try:
         main()
-    except KeyboardInterrupt:   # Если нажата Ctrl-C
+    except KeyboardInterrupt:  # Если нажата Ctrl-C производи выход.
         rprint("\n[bold red]Cancelled...[/bold red]")
         time.sleep(1)
 
